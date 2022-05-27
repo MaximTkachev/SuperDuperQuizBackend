@@ -1,5 +1,6 @@
 package com.hits.superduperquizbackend.security;
 
+import com.hits.superduperquizbackend.entity.UserEntity;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,5 +49,17 @@ public class SecurityUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static UserDetails fromUser(UserEntity user) {
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                true,
+                true,
+                true,
+                true,
+                user.getRole().getAuthorities()
+        );
     }
 }
