@@ -5,7 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -13,6 +15,16 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class UserEntity {
+
+    public UserEntity(String username, String password) {
+        this.id = UUID.randomUUID().toString();
+        this.username = username;
+        this.password = password;
+        this.role = Role.USER;
+        this.quizzes = new HashSet<>();
+        this.results = new HashSet<>();
+    }
+
     @Id
     @Column
     private String id;
@@ -23,6 +35,8 @@ public class UserEntity {
     @Column
     private String password;
 
+    @Column
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
