@@ -2,6 +2,7 @@ package com.hits.superduperquizbackend.controller;
 
 import com.hits.superduperquizbackend.DTO.AuthenticationDTO;
 import com.hits.superduperquizbackend.DTO.RegisterDTO;
+import com.hits.superduperquizbackend.DTO.category.CategoryDTO;
 import com.hits.superduperquizbackend.entity.UserEntity;
 import com.hits.superduperquizbackend.exception.BadRequestException;
 import com.hits.superduperquizbackend.repository.UserRepository;
@@ -60,10 +61,10 @@ public class AuthenticationRestController {
     public ResponseEntity<?> register(@RequestBody RegisterDTO dto) {
         var userWithTheSameUsername = userRepository.findByUsername(dto.getUsername());
         if (userWithTheSameUsername.isPresent()) {
-            throw new BadRequestException("Пользователь с таким логином уже существует");
+            return new ResponseEntity<>(new HashMap<>().put("message", "User with the same username already exists"), HttpStatus.BAD_REQUEST);
         }
         var user = new UserEntity(dto.getUsername(), passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        return new ResponseEntity<>(new HashMap<>().put("message", "OK"), HttpStatus.OK);
     }
 }
