@@ -5,7 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -37,4 +39,15 @@ public class QuizEntity {
 
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ResultEntity> results;
+
+    public QuizEntity(String name, String description, Difficult difficult, UserEntity author, CategoryEntity category) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.difficult = difficult;
+        this.description = description;
+        this.author = author;
+        this.category = category;
+        this.results = new HashSet<>();
+    }
+
 }
