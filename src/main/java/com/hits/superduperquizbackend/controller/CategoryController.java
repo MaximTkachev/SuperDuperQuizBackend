@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,5 +27,10 @@ public class CategoryController {
     public CategoryDTO editCategory(@Validated @RequestBody EditCategoryDto dto,
                                     @PathVariable UUID id) {
         return categoryService.editCategory(dto, id.toString());
+    }
+
+    @GetMapping
+    public List<CategoryDTO> getAllCategories() {
+        return categoryService.getAllCategories();
     }
 }
