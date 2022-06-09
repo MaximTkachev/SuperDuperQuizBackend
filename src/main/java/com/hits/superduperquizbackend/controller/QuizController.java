@@ -7,10 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/quizzes")
@@ -21,5 +20,10 @@ public class QuizController {
     @PostMapping
     public QuizDTO createQuiz(Authentication authentication, @Validated @RequestBody CreateQuizDTO dto) {
         return quizService.createQuiz(authentication, dto);
+    }
+
+    @GetMapping("/{id}")
+    public QuizDTO getQuizById(@PathVariable UUID id) {
+        return quizService.getQuizById(id.toString());
     }
 }

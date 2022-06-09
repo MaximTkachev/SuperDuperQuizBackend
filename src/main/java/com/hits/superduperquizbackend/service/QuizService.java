@@ -2,6 +2,7 @@ package com.hits.superduperquizbackend.service;
 
 import com.hits.superduperquizbackend.DTO.quiz.CreateQuizDTO;
 import com.hits.superduperquizbackend.DTO.quiz.QuizDTO;
+import com.hits.superduperquizbackend.converter.QuizConverter;
 import com.hits.superduperquizbackend.entity.QuizEntity;
 import com.hits.superduperquizbackend.exception.NotFoundException;
 import com.hits.superduperquizbackend.repository.CategoryRepository;
@@ -30,12 +31,13 @@ public class QuizService {
 
         var savedEntity = quizRepository.save(quiz);
 
-        return new QuizDTO(
-                savedEntity.getId(),
-                savedEntity.getName(),
-                savedEntity.getDescription(),
-                savedEntity.getDifficult(),
-                savedEntity.getCategory().getId(),
-                new HashSet<>());
+        return QuizConverter.entityToDTO(savedEntity);
+    }
+
+    public QuizDTO getQuizById(String id) {
+        var entity =  quizRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Викторина не найдена"));
+
+        return QuizConverter.entityToDTO(entity);
     }
 }
