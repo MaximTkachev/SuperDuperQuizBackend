@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +41,23 @@ public class QuizService {
                 .orElseThrow(() -> new NotFoundException("Викторина не найдена"));
 
         return QuizConverter.entityToDTO(entity);
+    }
+
+    public List<QuizDTO> getAllQuizzes(String categoryId) {
+        List<QuizEntity> quizzes;
+        if (!Objects.equals(categoryId, "")) {
+            var category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new NotFoundException("Категория не найдена"));
+            quizzes = quizRepository.findByCategory(category);
+        }
+        else
+            quizzes = quizRepository.findAll();
+
+        List<QuizDTO> result = new ArrayList<>();
+        for(var quiz : quizzes) {
+            result.add(QuizConverter.entityToDTO(quiz));
+        }
+
+        return result;
     }
 }
