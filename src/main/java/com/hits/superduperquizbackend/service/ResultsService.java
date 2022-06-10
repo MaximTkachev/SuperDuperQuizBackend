@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -41,8 +42,16 @@ public class ResultsService {
 
     public List<ResultDTO> getAllResults(String quizId) {
         Page<ResultEntity> pageRequest;
+        List<ResultEntity> list;
+        if (Objects.equals(quizId, "")) {
             pageRequest = resultRepository.findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "quantity")));
-        var list = pageRequest.getContent();
+            list = pageRequest.getContent();
+        }
+        else {
+            var quiz = quizRepository.findById(quizId)
+                    .orElseThrow(() -> new NotFoundException("Викторина не найдена"));
+            list = resultRepository.findTop10ByQuizOrderByQuantityDesc(quiz);
+        }
         var result = new ArrayList<ResultDTO>();
         for(var entity : list) {
             result.add(ResultConverter.entityToDTO(entity));
