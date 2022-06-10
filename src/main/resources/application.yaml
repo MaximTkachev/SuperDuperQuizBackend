@@ -6,10 +6,9 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
   flyway:
     locations: classpath:db/migration
-    enabled: false
 server:
   port: 8191
 jwt:
