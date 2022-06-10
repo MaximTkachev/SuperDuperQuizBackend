@@ -9,9 +9,14 @@ import com.hits.superduperquizbackend.repository.QuizRepository;
 import com.hits.superduperquizbackend.repository.ResultRepository;
 import com.hits.superduperquizbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,5 +37,16 @@ public class ResultsService {
         var result = ResultConverter.DTOToEntity(dto, author, quiz);
         var savedEntity = resultRepository.save(result);
         return ResultConverter.entityToDTO(savedEntity);
+    }
+
+    public List<ResultDTO> getAllResults(String quizId) {
+        Page<ResultEntity> pageRequest;
+            pageRequest = resultRepository.findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "quantity")));
+        var list = pageRequest.getContent();
+        var result = new ArrayList<ResultDTO>();
+        for(var entity : list) {
+            result.add(ResultConverter.entityToDTO(entity));
+        }
+        return result;
     }
 }
