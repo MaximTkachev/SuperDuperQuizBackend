@@ -2,9 +2,7 @@ package com.hits.superduperquizbackend.controller;
 
 import com.hits.superduperquizbackend.DTO.AuthenticationDTO;
 import com.hits.superduperquizbackend.DTO.RegisterDTO;
-import com.hits.superduperquizbackend.DTO.category.CategoryDTO;
 import com.hits.superduperquizbackend.entity.UserEntity;
-import com.hits.superduperquizbackend.exception.BadRequestException;
 import com.hits.superduperquizbackend.repository.UserRepository;
 import com.hits.superduperquizbackend.security.JWTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +37,11 @@ public class AuthenticationRestController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationDTO dto) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-            UserEntity user = userRepository.findByUsername(dto.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
-            String token = jwTokenProvider.createToken(dto.getEmail(), user.getRole());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+            UserEntity user = userRepository.findByUsername(dto.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+            String token = jwTokenProvider.createToken(dto.getUsername(), user.getRole());
             Map<Object, Object> response = new HashMap<>();
-            response.put("username", dto.getEmail());
+            response.put("username", dto.getUsername());
             response.put("token", token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
