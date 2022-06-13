@@ -5,7 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -26,4 +28,11 @@ public class QuestionEntity {
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<AnswerOptionEntity> answerOptions;
+
+    public QuestionEntity(String text, QuizEntity quiz) {
+        this.id = UUID.randomUUID().toString();
+        this.text = text;
+        this.quiz = quiz;
+        this.answerOptions = new HashSet<>();
+    }
 }
