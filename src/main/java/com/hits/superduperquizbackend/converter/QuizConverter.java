@@ -19,7 +19,7 @@ public class QuizConverter {
                 entity.getAuthor().getUsername(),
                 entity.getDescription(),
                 entity.getDifficult(),
-                entity.getCategory().getId(),
+                entity.getCategory().getName(),
                 questions);
     }
 }
