@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +20,10 @@ public class CreateQuizDTO {
     private String description;
 
     @NotNull
-    private Difficult difficult;
+    private Difficult difficulty;
 
     @NotBlank
-    private String categoryId;
+    private String category;
+
+    private List<CreateQuestionDTO> questions;
 }
