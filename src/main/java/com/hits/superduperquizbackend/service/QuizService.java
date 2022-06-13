@@ -3,18 +3,17 @@ package com.hits.superduperquizbackend.service;
 import com.hits.superduperquizbackend.DTO.quiz.CreateQuizDTO;
 import com.hits.superduperquizbackend.DTO.quiz.QuizDTO;
 import com.hits.superduperquizbackend.converter.QuizConverter;
+import com.hits.superduperquizbackend.entity.AnswerOptionEntity;
+import com.hits.superduperquizbackend.entity.QuestionEntity;
 import com.hits.superduperquizbackend.entity.QuizEntity;
 import com.hits.superduperquizbackend.exception.NotFoundException;
-import com.hits.superduperquizbackend.repository.CategoryRepository;
-import com.hits.superduperquizbackend.repository.QuizRepository;
-import com.hits.superduperquizbackend.repository.UserRepository;
+import com.hits.superduperquizbackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,16 +21,38 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final QuestionRepository questionRepository;
+    private final AnswerOptionRepository answerOptionRepository;
 
+    @Transactional
     public QuizDTO createQuiz(Authentication authentication, CreateQuizDTO dto) {
         var user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        var category = categoryRepository.findById(dto.getCategoryId())
+        var category = categoryRepository.findById(dto.getCategory())
                 .orElseThrow(() -> new NotFoundException("Category didn't found"));
 
-        var quiz = new QuizEntity(dto.getName(), dto.getDescription(), dto.getDifficult(), user, category);
-
+        var quiz = new QuizEntity(dto.getName(), dto.getDescription(), dto.getDifficulty(), user, category);
         var savedEntity = quizRepository.save(quiz);
+        for (var question : dto.getQuestions()) {
+            var questionEntity = new QuestionEntity(question.getText(), savedEntity);
+
+            var savedQuestion = questionRepository.save(questionEntity);
+            for (var answer : question.getAnswers()) {
+                var answerEntity = new AnswerOptionEntity(
+                        UUID.randomUUID().toString(),
+                        answer.getText(),
+                        answer.getIsRight(),
+                        savedQuestion
+                );
+
+                answerOptionRepository.save(answerEntity);
+            }
+        }
+
+        System.out.println("!");
+
+        savedEntity = quizRepository.findById(savedEntity.getId())
+                .orElseThrow(() -> new NotFoundException(""));
 
         return QuizConverter.entityToDTO(savedEntity);
     }
