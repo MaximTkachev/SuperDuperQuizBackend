@@ -1,13 +1,15 @@
 package com.hits.superduperquizbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-@Data
+//@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,10 +22,17 @@ public class QuestionEntity {
     @Column
     private String text;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private QuizEntity quiz;
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<AnswerOptionEntity> answerOptions;
+
+    public QuestionEntity(String text, QuizEntity quiz) {
+        this.id = UUID.randomUUID().toString();
+        this.text = text;
+        this.quiz = quiz;
+        this.answerOptions = new HashSet<>();
+    }
 }

@@ -1,15 +1,15 @@
 package com.hits.superduperquizbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
+//@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -29,16 +29,19 @@ public class QuizEntity {
     @Enumerated(EnumType.STRING)
     private Difficult difficult;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private UserEntity author;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;
 
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ResultEntity> results;
+
+    @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<QuestionEntity> questions;
 
     public QuizEntity(String name, String description, Difficult difficult, UserEntity author, CategoryEntity category) {
         this.id = UUID.randomUUID().toString();
@@ -48,6 +51,6 @@ public class QuizEntity {
         this.author = author;
         this.category = category;
         this.results = new HashSet<>();
+        this.questions = new HashSet<>();
     }
-
 }

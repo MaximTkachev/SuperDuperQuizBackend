@@ -1,12 +1,12 @@
 package com.hits.superduperquizbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+//@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -23,7 +23,7 @@ public class AnswerOptionEntity {
     @Column
     private Boolean isRight;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private QuestionEntity question;
 }
