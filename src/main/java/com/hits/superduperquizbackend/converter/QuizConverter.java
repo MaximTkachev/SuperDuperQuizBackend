@@ -13,7 +13,7 @@ public class QuizConverter {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getDifficult(),
-                entity.getCategory().getId(),
-                new HashSet<>());
+                entity.getCategory().getId()
+        );
     }
 }
