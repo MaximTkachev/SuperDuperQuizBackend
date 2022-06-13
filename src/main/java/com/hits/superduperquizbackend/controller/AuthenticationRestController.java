@@ -63,6 +63,11 @@ public class AuthenticationRestController {
         }
         var user = new UserEntity(dto.getUsername(), passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
-        return new ResponseEntity<>(new HashMap<>().put("message", "OK"), HttpStatus.OK);
+
+        String token = jwTokenProvider.createToken(dto.getUsername(), user.getRole());
+        Map<Object, Object> response = new HashMap<>();
+        response.put("username", dto.getUsername());
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 }
