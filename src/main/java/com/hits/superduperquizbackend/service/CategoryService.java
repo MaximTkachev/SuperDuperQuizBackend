@@ -22,7 +22,7 @@ public class CategoryService {
     public CategoryDTO createCategory(CreateCategoryDTO dto) {
         var entity = new CategoryEntity(dto);
         var savedEntity = categoryRepository.save(entity);
-        return new CategoryDTO(savedEntity.getId(), savedEntity.getName());
+        return new CategoryDTO(savedEntity.getId(), savedEntity.getName(), 0);
     }
 
     @Transactional
@@ -30,7 +30,7 @@ public class CategoryService {
         var entity = categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Категория не найдена"));
         entity.setName(dto.getName());
-        return new CategoryDTO(entity.getId(), entity.getName());
+        return new CategoryDTO(entity.getId(), entity.getName(), entity.getQuizzes().size());
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +38,7 @@ public class CategoryService {
         var entities = categoryRepository.findAll();
         var result = new ArrayList<CategoryDTO>();
         for(var entity: entities) {
-            result.add(new CategoryDTO(entity.getId(), entity.getName()));
+            result.add(new CategoryDTO(entity.getId(), entity.getName(), entity.getQuizzes().size()));
         }
         return result;
     }
